@@ -55,6 +55,7 @@ std::unique_ptr<PosixSharedMemory> PosixSharedMemory::Create(size_t size) {
     fd = base::TempFile::CreateUnlinked().ReleaseFD();
   }
 #endif
+#endif
 
   PERFETTO_CHECK(fd);
   int res = ftruncate(fd.get(), static_cast<off_t>(size));
