@@ -45,6 +45,10 @@ std::unique_ptr<PosixSharedMemory> PosixSharedMemory::Create(size_t size) {
   bool is_memfd = !!fd;
 
 #if !defined(HAS_MEMFD_BACKPORT)
+  // In-tree builds only allow mem_fd, so we can inspect the seals to verify the
+  // fd is appropriately sealed. We'll crash in the PERFETTO_CHECK(fd) below if
+  // memfd_create failed.
+#if !PERFETTO_BUILDFLAG(PERFETTO_ANDROID_BUILD)
   if (!fd) {
     // TODO: if this fails on Android we should fall back on ashmem.
     PERFETTO_DPLOG("memfd_create() failed");
